@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
+import java.util.UUID;
 
 public class Main extends JFrame {
 
@@ -14,7 +15,13 @@ public class Main extends JFrame {
     }
 
     public static void main(String[] args) {
-        Player me = new Player(args.length > 0 ? args[0] : "default", 400, 300, Color.BLUE);
+        String id = UUID.randomUUID().toString().substring(0, 8);
+        Player me = new Player(
+                args.length > 0 ? args[0] : id,
+                400,
+                300,
+                Color.BLUE
+        );
         Blackboard.getInstance().setMe(me);
 
         SwingUtilities.invokeLater(() -> {
@@ -31,6 +38,5 @@ public class Main extends JFrame {
 
 
         Subscriber subscriber = new Subscriber(Blackboard.BROKER, new String[]{Blackboard.TOPIC});
-//        Blackboard.getInstance().addPropertyChangeListener(subscriber);
     }
 }
