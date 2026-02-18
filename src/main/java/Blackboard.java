@@ -1,3 +1,4 @@
+import java.awt.*;
 import java.beans.PropertyChangeSupport;
 import java.util.Vector;
 
@@ -36,54 +37,47 @@ public class Blackboard extends PropertyChangeSupport {
 
     public void setMe(Player me) {
         this.me = me;
-        // optional: tell UI something changed
         firePropertyChange("me", null, me);
     }
 
-    /**
-     * payload is coming from MQTT like: "id,x,y"
-     * Example: "bob,420,300"
-     */
     public void addPlayerFromPayload(String payload) {
         if (payload == null || payload.isBlank()) return;
         String[] parts = payload.split(",");
-        if (parts.length < 3) return;
+        if (parts.length < 6) return;
 
         String id = parts[0].trim();
-        if (me != null && id.equals(me.getId())) return; // ignore self
+        if (me != null && id.equals(me.getId())) return;
 
-        int x, y;
         try {
-            x = Integer.parseInt(parts[1].trim());
-            y = Integer.parseInt(parts[2].trim());
+            int x = Integer.parseInt(parts[1].trim());
+            int y = Integer.parseInt(parts[2].trim());
+            int r = Integer.parseInt(parts[3].trim());
+            int g = Integer.parseInt(parts[4].trim());
+            int b = Integer.parseInt(parts[5].trim());
+            Color color = new Color(r, g, b);
+
+            Player p = findOrCreate(id, x, y, color);
+            p.setX(x);
+            p.setY(y);
+            p.setColor(color);
+
+            firePropertyChange("players", null, players);
         } catch (NumberFormatException e) { return; }
-
-        Player p = findOrCreate(id);
-        p.setX(x);
-        p.setY(y);
-
-        firePropertyChange("players", null, players); // always fires since old=null
     }
 
     /**
      * Finds a player by id, or creates and stores a new one if missing.
      */
-    private Player findOrCreate(String id) {
+    private Player findOrCreate(String id, int x, int y, Color color) {
         for (Player p : players) {
-            if (p.getId().equals(id)) {
-                return p;
-            }
+            if (p.getId().equals(id)) return p;
         }
-
-        // We don’t know your Player constructor exactly.
-        // Based on what you showed earlier: Player(id, x, y, Color)
-        // For remote players, pick a default starting position and color.
-        Player created = new Player(id, 0, 0, java.awt.Color.RED);
+        // use the color passed in from the payload, not a random one
+        Player created = new Player(id, x, y, color);
         players.add(created);
         return created;
     }
 
-    // --- Movement API used by MyKeyListener ---
 
     private static final int STEP = 20; // matches your grid cells
 

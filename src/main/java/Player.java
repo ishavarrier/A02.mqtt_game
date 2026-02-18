@@ -42,4 +42,12 @@ public class Player {
     public void setId(String id) {
         this.id = id;
     }
+
+    public Color getColor() {
+        return color;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
+    }
 }

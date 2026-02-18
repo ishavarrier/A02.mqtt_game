@@ -45,7 +45,8 @@ public class Publisher implements PropertyChangeListener {
         }
         try {
             Player me = Blackboard.getInstance().getMe();
-            String content = me.getId() + "," + me.getX() + "," + me.getY();
+            String content = me.getId() + "," + me.getX() + "," + me.getY() + ","
+                    + me.getColor().getRed() + "," + me.getColor().getGreen() + "," + me.getColor().getBlue();
 
             MqttMessage message = new MqttMessage(content.getBytes());
             message.setQos(2);

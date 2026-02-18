@@ -35,8 +35,6 @@ public class Main extends JFrame {
             main.setVisible(true);
         });
 
-
-
         Subscriber subscriber = new Subscriber(Blackboard.BROKER, new String[]{Blackboard.TOPIC});
     }
 }
