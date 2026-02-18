@@ -16,11 +16,16 @@ public class Main extends JFrame {
 
     public static void main(String[] args) {
         String id = UUID.randomUUID().toString().substring(0, 8);
+        Color randomColor = new Color(
+                (int)(Math.random() * 256),
+                (int)(Math.random() * 256),
+                (int)(Math.random() * 256)
+        );
         Player me = new Player(
                 args.length > 0 ? args[0] : id,
                 400,
                 300,
-                Color.BLUE
+                randomColor
         );
         Blackboard.getInstance().setMe(me);
 
